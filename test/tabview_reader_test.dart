@@ -6,7 +6,7 @@ import 'package:test/scaffolding.dart';
 
 void main() {
   test('tab view build page test.', () {
-    var reader = TabViewReader(
+    var reader = TabviewReader(
         viewHeight: 64,
         lineHeight: 4,
         sheetMusic: SheetMusic.fromJson({

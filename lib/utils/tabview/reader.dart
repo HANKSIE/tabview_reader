@@ -1,6 +1,6 @@
 import 'package:tabview_reader/models/sheet_music.dart';
 
-class TabViewReader {
+class TabviewReader {
   late final SheetMusic _sheetMusic;
   late final int _viewLines;
   int _page = 0;
@@ -8,7 +8,7 @@ class TabViewReader {
   get page => _pages[_page];
   get pages => _pages;
   get viewLines => _viewLines;
-  TabViewReader(
+  TabviewReader(
       {required int viewHeight,
       required int lineHeight,
       required SheetMusic sheetMusic}) {

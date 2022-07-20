@@ -15,7 +15,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: const Center(
         child: Text(
-          'You have pushed the button this many times:',
+          '搜尋',
         ),
       ),
     );
