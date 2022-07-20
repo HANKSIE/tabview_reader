@@ -35,7 +35,7 @@ class _NormalControlsState extends State<TabviewReaderControls> {
       log("view height: ${_getViewHeight()}");
       Provider.of<TabviewReaderStore>(context, listen: false).build(
           viewHeight: _getViewHeight(),
-          lineHeight: lineHeight,
+          lineHeight: lineHeight.toInt(),
           sheetMusic: sheetMusic);
     } catch (e) {
       log('Error: $e');
