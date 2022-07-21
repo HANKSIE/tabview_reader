@@ -58,9 +58,9 @@ class SettingsStore with ChangeNotifier {
   Future<void> save() async {
     try {
       await Future.wait([
-      _storage!.setTheme(_theme);
-      _storage!.setFontHeight(_fontHeight);
-      _storage!.setFontSize(_fontSize);
+        _storage!.setTheme(_theme),
+        _storage!.setFontHeight(_fontHeight),
+        _storage!.setFontSize(_fontSize)
       ]);
     } catch (err) {
       Fluttertoast.showToast(msg: '儲存設定發生錯誤: $err');
