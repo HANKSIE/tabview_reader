@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/store/settings.dart';
-import 'package:tabview_reader/store/tabview_reader.dart';
+import 'package:tabview_reader/store/tabview_reader_group.dart';
 import 'package:tabview_reader/utils/tabview/parser.dart';
-import 'package:tabview_reader/widgets/settings_buttomsheet.dart';
+import 'package:tabview_reader/utils/tabview/reader.dart';
+import 'package:tabview_reader/widgets/settings_bottom_sheet.dart';
 
 class TabviewReaderControls extends StatefulWidget {
   const TabviewReaderControls({Key? key, required this.viewKey})
@@ -28,15 +30,19 @@ class _NormalControlsState extends State<TabviewReaderControls> {
       var result = await FilePicker.platform.pickFiles();
       if (result == null) return;
       var file = File(result.files.single.path!);
-      var str = file.readAsStringSync();
-      var sheetMusic = TabviewParser.exec(str);
+      var content = file.readAsStringSync();
+      var sheetMusic =
+          TabviewParser.exec(name: path.basename(file.path), content: content);
       var lineHeight =
           Provider.of<SettingsStore>(context, listen: false).lineHeight;
-      log("view height: ${_getViewHeight()}");
-      Provider.of<TabviewReaderStore>(context, listen: false).build(
-          viewHeight: _getViewHeight(),
-          lineHeight: lineHeight.toInt(),
-          sheetMusic: sheetMusic);
+      var readerGroupStore =
+          Provider.of<TabviewReaderGroupStore>(context, listen: false);
+      readerGroupStore.clear();
+      readerGroupStore.add(
+          reader: TabviewReader(
+              viewHeight: _getViewHeight(),
+              lineHeight: lineHeight,
+              sheetMusic: sheetMusic));
     } catch (e) {
       log('Error: $e');
     }

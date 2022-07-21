@@ -5,7 +5,7 @@ class SettingsStore with ChangeNotifier {
   double _fontHeight = 1.2;
   get fontSize => _fontSize;
   get fontHeight => _fontHeight;
-  get lineHeight => _fontSize * _fontHeight;
+  get lineHeight => (_fontSize * _fontHeight).toInt();
 
   setFontSize(double fontSize) {
     _fontSize = fontSize;

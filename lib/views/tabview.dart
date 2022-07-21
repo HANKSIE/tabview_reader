@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/store/settings.dart';
-import 'package:tabview_reader/store/tabview_reader.dart';
+import 'package:tabview_reader/store/tabview_reader_group.dart';
 import 'package:tabview_reader/widgets/reader_controls.dart';
 import 'package:tabview_reader/widgets/reader_sheet_music_controls.dart';
 
@@ -13,22 +13,18 @@ class TabViewPage extends StatefulWidget {
 
 class _TabViewPageState extends State<TabViewPage> {
   final _viewKey = GlobalKey();
-  late final TextStyle _lineStyle;
-
-  @override
-  void initState() {
-    var settingsStore = Provider.of<SettingsStore>(context, listen: false);
-    _lineStyle = TextStyle(
-        height: settingsStore.fontHeight, fontSize: settingsStore.fontSize);
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(actions: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            const TabviewReaderSheetMusicControls(),
+            Consumer<TabviewReaderGroupStore>(
+                builder: (context, readerGroup, child) {
+              return readerGroup.isEmpty
+                  ? const SizedBox.shrink()
+                  : const TabviewReaderSheetMusicControls();
+            }),
             TabviewReaderControls(
               viewKey: _viewKey,
             )
@@ -37,18 +33,29 @@ class _TabViewPageState extends State<TabViewPage> {
         body: Builder(
           key: _viewKey,
           builder: (context) {
-            return Consumer<TabviewReaderStore>(
-              builder: (context, store, child) {
-                return store.reader == null
+            return Consumer2<TabviewReaderGroupStore, SettingsStore>(
+              builder: (context, readerGroup, settings, child) {
+                return readerGroup.isEmpty
                     ? const Center(
                         child: Text(
                         '開始彈奏吧',
                         style: TextStyle(fontSize: 30),
                       ))
-                    : Column(children: [
-                        Text('line 1', style: _lineStyle),
-                        Text('line 2', style: _lineStyle),
-                      ]);
+                    : OverflowBox(
+                        maxWidth: double.infinity,
+                        child:
+                        SingleChildScrollView(child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              for (var text in readerGroup.reader?.page)
+                                Text(text,
+                                    style: TextStyle(
+                                      height: settings.fontHeight,
+                                      fontSize: settings.fontSize,
+                                      fontFamily: 'Roboto Mono',
+                                    ))
+                            ]))
+                        );
               },
             );
           },
