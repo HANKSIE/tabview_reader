@@ -43,9 +43,11 @@ class _TabViewPageState extends State<TabViewPage> {
                       ))
                     : OverflowBox(
                         maxWidth: double.infinity,
-                        child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
+                        child: SingleChildScrollView(
+                            // 為了些微誤差允許滾動
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
                               for (var text in readerGroup.reader?.page)
                                 Text(text,
                                     style: TextStyle(
@@ -53,7 +55,7 @@ class _TabViewPageState extends State<TabViewPage> {
                                       fontSize: settings.fontSize,
                                       fontFamily: 'Roboto Mono',
                                     ))
-                            ]));
+                            ])));
               },
             );
           },

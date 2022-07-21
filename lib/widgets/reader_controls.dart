@@ -20,9 +20,9 @@ class TabviewReaderControls extends StatefulWidget {
 }
 
 class _NormalControlsState extends State<TabviewReaderControls> {
-  int _getViewHeight() {
+  _getViewHeight() {
     final size = widget.viewKey.currentContext?.size;
-    return size != null ? size.height.toInt() : 0;
+    return size != null ? size.height : 0;
   }
 
   _fileOpen() async {

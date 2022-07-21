@@ -6,12 +6,12 @@ import 'package:tabview_reader/store/settings.dart';
 import 'package:tabview_reader/store/tabview_reader_group.dart';
 import 'package:tabview_reader/views/tabview.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class App extends StatelessWidget {
+  const App({Key? key}) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -25,17 +25,19 @@ class MyApp extends StatelessWidget {
               create: (context) => TabviewReaderGroupStore()),
           ChangeNotifierProvider(create: (context) => SettingsStore()),
         ],
-        child: MaterialApp(
-          routes: routes,
-          theme: ThemeData(
-            brightness: Brightness.light,
-          ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-          ),
-          themeMode: ThemeMode.dark,
-          debugShowCheckedModeBanner: false,
-          home: const TabViewPage(),
-        ));
+        child: Consumer<SettingsStore>(builder: (context, settings, child) {
+          return MaterialApp(
+            routes: routes,
+            theme: ThemeData(
+              brightness: Brightness.light,
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+            ),
+            themeMode: settings.theme,
+            debugShowCheckedModeBanner: false,
+            home: const TabViewPage(),
+          );
+        }));
   }
 }

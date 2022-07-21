@@ -15,7 +15,7 @@ class TabviewReaderGroupStore with ChangeNotifier {
     _songIndex = 0;
   }
 
-  void reset({int? viewHeight, required int lineHeight}) {
+  void reset({num? viewHeight, required num lineHeight}) {
     for (var reader in _readers) {
       reader.reset(viewHeight: viewHeight, lineHeight: lineHeight);
     }
