@@ -20,26 +20,26 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
 
     List<ControlConfig> configs = [
       ControlConfig(
-        label: '字體大小',
+        label: '字體大小 ${settingsStore.fontSize}',
         slide: SlideControlConfig(
             value: settingsStore.fontSize,
             min: 5.0,
             max: 50.0,
             divisions: 45,
             onChange: (double val) {
-              settingsStore.setFontSize(val);
+              settingsStore.setFontSize(double.parse(val.toStringAsFixed(1)));
               readerGroupStore.reset(lineHeight: settingsStore.lineHeight);
             }),
       ),
       ControlConfig(
-        label: '字體高度',
+        label: '字體高度 ${settingsStore.fontHeight}',
         slide: SlideControlConfig(
             value: settingsStore.fontHeight,
             min: 1.2,
             max: 10.0,
             divisions: 88,
             onChange: (double val) {
-              settingsStore.setFontHeight(val);
+              settingsStore.setFontHeight(double.parse(val.toStringAsFixed(1)));
               readerGroupStore.reset(lineHeight: settingsStore.lineHeight);
             }),
       ),
