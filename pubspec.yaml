@@ -38,6 +38,7 @@ dependencies:
   test: ^1.19.5
   collection: ^1.15.0
   provider: ^6.0.3
+  fluttertoast: ^8.0.9
 
 dev_dependencies:
   flutter_test:

@@ -57,7 +57,7 @@ class TabviewReaderGroupStore with ChangeNotifier {
   }
 
   bool prevPage() {
-    var isDone = reader?.next();
+    var isDone = reader?.prev();
     notifyListeners();
     return isDone;
   }

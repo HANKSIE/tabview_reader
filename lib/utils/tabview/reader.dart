@@ -38,17 +38,16 @@ class TabviewReader {
     var lines = sheetMusic.lines;
     var heads = sheetMusic.heads;
     int start = heads[0];
-    int p = 1;
     List<List<String>> pages = [];
+
     for (int i = 0; i <= heads.length; i++) {
       if (i == heads.length) {
         final end = heads[i - 1] + 6;
         pages.add([for (int j = start; j <= end; j++) lines[j]]);
-      } else if (heads[i] + 6 > viewLines * p - 1) {
+      } else if (heads[i] + 6 > start + viewLines) {
         final end = heads[i - 1] + 6;
         pages.add([for (int j = start; j <= end; j++) lines[j]]);
         start = heads[i];
-        p++;
       }
     }
     return pages;

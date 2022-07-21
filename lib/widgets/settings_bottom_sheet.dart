@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/store/settings.dart';
@@ -18,8 +16,8 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
     var settingsStore = Provider.of<SettingsStore>(context, listen: true);
     var readerGroupStore =
         Provider.of<TabviewReaderGroupStore>(context, listen: false);
-    List<SlideControlSetting> slideControlSetting = [
-      SlideControlSetting(
+    List<SlideControlConfig> configs = [
+      SlideControlConfig(
           label: 'font size',
           value: settingsStore.fontSize,
           min: 5.0,
@@ -29,7 +27,7 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
             settingsStore.setFontSize(val);
             readerGroupStore.reset(lineHeight: settingsStore.lineHeight);
           }),
-      SlideControlSetting(
+      SlideControlConfig(
           label: 'font height',
           value: settingsStore.fontHeight,
           min: 1.2,
@@ -45,22 +43,22 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
       child: Column(
           children: [
         [
-          for (var setting in slideControlSetting)
+          for (var config in configs)
             Row(children: [
               Expanded(
                 child: Text(
-                  setting.label,
+                  config.label,
                   style: const TextStyle(fontSize: 20),
                 ),
               ),
               Expanded(
                   child: Slider(
-                value: setting.value,
-                min: setting.min,
-                max: setting.max,
-                divisions: setting.divisions,
-                label: setting.value.toString(),
-                onChanged: setting.onChange,
+                value: config.value,
+                min: config.min,
+                max: config.max,
+                divisions: config.divisions,
+                label: config.value.toString(),
+                onChanged: config.onChange,
               ))
             ])
         ]
@@ -69,16 +67,14 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
   }
 }
 
-typedef SlideControlSettingOnChangeFunc = void Function(double);
-
-class SlideControlSetting {
+class SlideControlConfig {
   String label;
   double value;
   double max;
   double min;
   int divisions;
-  SlideControlSettingOnChangeFunc onChange;
-  SlideControlSetting(
+  void Function(double) onChange;
+  SlideControlConfig(
       {required this.label,
       required this.value,
       required this.max,

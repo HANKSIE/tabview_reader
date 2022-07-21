@@ -38,13 +38,12 @@ class _TabViewPageState extends State<TabViewPage> {
                 return readerGroup.isEmpty
                     ? const Center(
                         child: Text(
-                        '開始彈奏吧',
+                        '還沒選擇任何樂譜',
                         style: TextStyle(fontSize: 30),
                       ))
                     : OverflowBox(
                         maxWidth: double.infinity,
-                        child:
-                        SingleChildScrollView(child: Column(
+                        child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               for (var text in readerGroup.reader?.page)
@@ -54,8 +53,7 @@ class _TabViewPageState extends State<TabViewPage> {
                                       fontSize: settings.fontSize,
                                       fontFamily: 'Roboto Mono',
                                     ))
-                            ]))
-                        );
+                            ]));
               },
             );
           },
