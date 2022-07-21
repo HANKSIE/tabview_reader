@@ -46,75 +46,77 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
     ];
     return Padding(
       padding: const EdgeInsets.all(50),
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-        Column(
-          children: [
-            [
-              for (var config in configs)
-                Row(children: [
-                  Expanded(
-                    child: Text(
-                      config.label,
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
-                  Expanded(
-                      child: Slider(
-                    value: config.slide.value,
-                    min: config.slide.min,
-                    max: config.slide.max,
-                    divisions: config.slide.divisions,
-                    label: config.slide.value.toString(),
-                    onChanged: config.slide.onChange,
-                  ))
-                ])
-            ],
-            [
+      child: ListView(
+        children: [
+          [
+            for (var config in configs)
               Row(children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    '保持開啟',
-                    style: TextStyle(fontSize: 20),
+                    config.label,
+                    style: const TextStyle(fontSize: 20),
                   ),
                 ),
                 Expanded(
-                    child: Switch(
-                  value: settingsStore.wakeUp,
-                  onChanged: (bool value) {
-                    settingsStore.setWakeUp(value);
-                  },
-                )),
-              ]),
-              Row(children: [
-                const Expanded(
-                  child: Text(
-                    '深色主題',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ),
-                Expanded(
-                    child: Switch(
-                  value: settingsStore.dark,
-                  onChanged: (bool value) {
-                    settingsStore.toggleTheme();
-                  },
+                    child: Slider(
+                  value: config.slide.value,
+                  min: config.slide.min,
+                  max: config.slide.max,
+                  divisions: config.slide.divisions,
+                  label: config.slide.value.toString(),
+                  onChanged: config.slide.onChange,
                 ))
-              ]),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20)),
-                onPressed: () async {
-                  await settingsStore.save();
-                  Fluttertoast.showToast(
-                      msg: '已儲存', gravity: ToastGravity.CENTER);
-                },
-                child: const Text('儲存'),
+              ])
+          ],
+          [
+            Row(children: [
+              const Expanded(
+                child: Text(
+                  '保持開啟',
+                  style: TextStyle(fontSize: 20),
+                ),
               ),
-            ]
-          ].expand((widget) => widget).toList(),
-        ),
-      ]),
+              Expanded(
+                  child: Switch(
+                value: settingsStore.wakeUp,
+                onChanged: (bool value) {
+                  settingsStore.setWakeUp(value);
+                },
+              )),
+            ]),
+            Row(children: [
+              const Expanded(
+                child: Text(
+                  '深色主題',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
+              Expanded(
+                  child: Switch(
+                value: settingsStore.dark,
+                onChanged: (bool value) {
+                  settingsStore.toggleTheme();
+                },
+              ))
+            ]),
+            const SizedBox(
+              height: 50,
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                textStyle: const TextStyle(fontSize: 20),
+                padding: const EdgeInsets.only(top: 10, bottom: 10),
+              ),
+              onPressed: () async {
+                await settingsStore.save();
+                Fluttertoast.showToast(
+                    msg: '已儲存', gravity: ToastGravity.CENTER);
+              },
+              child: const Text('儲存'),
+            ),
+          ]
+        ].expand((widget) => widget).toList(),
+      ),
     );
   }
 }

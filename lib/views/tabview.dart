@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/store/settings.dart';
@@ -39,8 +37,6 @@ class _TabViewPageState extends State<TabViewPage> {
           return OrientationBuilder(builder: (context, orientation) {
             if (_orientation != null && _orientation != orientation) {
               WidgetsBinding.instance?.addPostFrameCallback((_) {
-                log("orientation change, reset reader..");
-                log(_viewKey.currentContext?.size?.height.toString() ?? '');
                 readerGroup.reset(
                     lineHeight: settings.lineHeight,
                     viewHeight: _viewKey.currentContext?.size?.height ?? 0);

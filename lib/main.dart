@@ -5,7 +5,7 @@ import 'package:tabview_reader/store/settings.dart';
 import 'package:tabview_reader/store/tabview_reader_group.dart';
 import 'package:tabview_reader/views/tabview.dart';
 
-void main() async {
+void main() {
   runApp(const App());
 }
 
@@ -25,11 +25,9 @@ class App extends StatelessWidget {
           return MaterialApp(
             routes: routes,
             theme: ThemeData(
-              brightness: Brightness.light,
-            ),
+                brightness: Brightness.light, primarySwatch: Colors.teal),
             darkTheme: ThemeData(
-              brightness: Brightness.dark,
-            ),
+                brightness: Brightness.dark, primarySwatch: Colors.teal),
             themeMode: settings.theme,
             debugShowCheckedModeBanner: false,
             home: const TabViewPage(),
