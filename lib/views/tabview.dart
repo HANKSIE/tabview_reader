@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/store/settings.dart';
 import 'package:tabview_reader/store/tabview_reader_group.dart';
+import 'package:tabview_reader/utils/tabview/readerControlWrapper.dart';
 import 'package:tabview_reader/widgets/reader_controls.dart';
 import 'package:tabview_reader/widgets/reader_sheet_music_controls.dart';
 
@@ -13,6 +16,7 @@ class TabViewPage extends StatefulWidget {
 
 class _TabViewPageState extends State<TabViewPage> {
   final _viewKey = GlobalKey();
+  Orientation? _orientation;
 
   @override
   Widget build(BuildContext context) {
@@ -30,35 +34,71 @@ class _TabViewPageState extends State<TabViewPage> {
             )
           ])
         ]),
-        body: Builder(
-          key: _viewKey,
-          builder: (context) {
-            return Consumer2<TabviewReaderGroupStore, SettingsStore>(
-              builder: (context, readerGroup, settings, child) {
+        body: Consumer2<TabviewReaderGroupStore, SettingsStore>(
+            builder: (context, readerGroup, settings, child) {
+          return OrientationBuilder(builder: (context, orientation) {
+            if (_orientation != null && _orientation != orientation) {
+              WidgetsBinding.instance?.addPostFrameCallback((_) {
+                log("orientation change, reset reader..");
+                log(_viewKey.currentContext?.size?.height.toString() ?? '');
+                readerGroup.reset(
+                    lineHeight: settings.lineHeight,
+                    viewHeight: _viewKey.currentContext?.size?.height ?? 0);
+              });
+            }
+            _orientation = orientation;
+
+            return Builder(
+              key: _viewKey,
+              builder: (context) {
+                final prevPage = readerControlWrapper(
+                    target: readerGroup.prevPage, doneTip: '已經是第一頁了');
+                final nextPage = readerControlWrapper(
+                    target: readerGroup.nextPage, doneTip: '已經是最後一頁了');
                 return readerGroup.isEmpty
                     ? const Center(
                         child: Text(
                         '還沒選擇任何樂譜',
                         style: TextStyle(fontSize: 30),
                       ))
-                    : OverflowBox(
-                        maxWidth: double.infinity,
-                        child: SingleChildScrollView(
-                            // 為了些微誤差允許滾動
-                            child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                              for (var text in readerGroup.reader?.page)
-                                Text(text,
-                                    style: TextStyle(
-                                      height: settings.fontHeight,
-                                      fontSize: settings.fontSize,
-                                      fontFamily: 'Roboto Mono',
-                                    ))
-                            ])));
+                    : GestureDetector(
+                        onTapUp: (TapUpDetails details) {
+                          nextPage();
+                        },
+                        onHorizontalDragEnd: (DragEndDetails details) {
+                          if (details.velocity.pixelsPerSecond.dx > 0) {
+                            prevPage();
+                          }
+                          if (details.velocity.pixelsPerSecond.dx < 0) {
+                            nextPage();
+                          }
+                        },
+                        // expanded 嵌套是為了 width height 自動擴展到最大
+                        child: Column(children: [
+                          Expanded(
+                              child: Row(
+                            children: [
+                              Expanded(
+                                  child: SingleChildScrollView(
+                                      // 為了些微誤差允許滾動
+                                      child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                    for (var text in readerGroup.reader?.page)
+                                      Text(text,
+                                          style: TextStyle(
+                                            height: settings.fontHeight,
+                                            fontSize: settings.fontSize,
+                                            fontFamily: 'Roboto Mono',
+                                          ))
+                                  ])))
+                            ],
+                          ))
+                        ]));
               },
             );
-          },
-        ));
+          });
+        }));
   }
 }

@@ -13,13 +13,14 @@ class TabviewReaderGroupStore with ChangeNotifier {
       reader.restart();
     }
     _songIndex = 0;
+    notifyListeners();
   }
 
   void reset({num? viewHeight, required num lineHeight}) {
     for (var reader in _readers) {
       reader.reset(viewHeight: viewHeight, lineHeight: lineHeight);
     }
-    _songIndex = 0;
+    notifyListeners();
   }
 
   void add({required TabviewReader reader}) {

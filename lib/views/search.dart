@@ -15,7 +15,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       body: const Center(
         child: Text(
-          '搜尋',
+          '再等等...',
         ),
       ),
     );

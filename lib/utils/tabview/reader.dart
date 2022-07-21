@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:tabview_reader/models/sheet_music.dart';
 
 class TabviewReader {
@@ -16,9 +18,14 @@ class TabviewReader {
       required SheetMusic sheetMusic}) {
     _sheetMusic = sheetMusic;
     _viewHeight = viewHeight;
-    _viewLines = (viewHeight / (lineHeight.ceil())).floor();
+    _viewLines =
+        _computeViewLines(viewHeight: _viewHeight, lineHeight: lineHeight);
     _pages = _buildPages(sheetMusic: _sheetMusic, viewLines: _viewLines);
   }
+
+  static _computeViewLines(
+          {required num viewHeight, required num lineHeight}) =>
+      (viewHeight / (lineHeight.ceil())).floor();
 
   void restart() {
     _pageIndex = 0;
@@ -27,9 +34,11 @@ class TabviewReader {
   void reset({num? viewHeight, required num lineHeight}) {
     _pageIndex = 0;
     if (viewHeight != null) {
-      _viewHeight = _viewHeight;
+      _viewHeight = viewHeight;
     }
-    _viewLines = _viewHeight ~/ lineHeight;
+    _viewLines =
+        _computeViewLines(viewHeight: _viewHeight, lineHeight: lineHeight);
+
     _pages = _buildPages(sheetMusic: _sheetMusic, viewLines: _viewLines);
   }
 

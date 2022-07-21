@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/routes.dart';
 import 'package:tabview_reader/store/settings.dart';
@@ -16,9 +15,6 @@ class App extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(

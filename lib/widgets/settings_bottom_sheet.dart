@@ -91,7 +91,8 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
                     textStyle: const TextStyle(fontSize: 20)),
                 onPressed: () async {
                   await settingsStore.save();
-                  Fluttertoast.showToast(msg: '已儲存');
+                  Fluttertoast.showToast(
+                      msg: '已儲存', gravity: ToastGravity.CENTER);
                 },
                 child: const Text('儲存'),
               ),
