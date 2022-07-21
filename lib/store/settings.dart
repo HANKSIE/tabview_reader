@@ -2,18 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tabview_reader/utils/setting_storage.dart';
+import 'package:wakelock/wakelock.dart';
 
 class SettingsStore with ChangeNotifier {
   double _fontSize = 8;
   double _fontHeight = 1.2;
   ThemeMode _theme = ThemeMode.dark;
+  bool _wakeUp = false;
+
   SettingStorage? _storage;
   get fontSize => _fontSize;
   get fontHeight => _fontHeight;
   get lineHeight => _fontSize * _fontHeight;
   get theme => _theme;
-
-  get isDarkTheme => _theme == ThemeMode.dark;
+  get wakeUp => _wakeUp;
+  get dark => _theme == ThemeMode.dark;
 
   SettingsStore() {
     _init();
@@ -38,6 +41,11 @@ class SettingsStore with ChangeNotifier {
           storeValue: theme,
           setStorage: _storage!.setTheme,
           setStore: setTheme);
+      _sync<bool>(
+          storageValue: _storage!.getWakeUp(),
+          storeValue: wakeUp,
+          setStorage: _storage!.setWakeUp,
+          setStore: setWakeUp);
     } catch (err) {
       Fluttertoast.showToast(msg: '設定檔同步錯誤: $err');
     }
@@ -60,8 +68,10 @@ class SettingsStore with ChangeNotifier {
       await Future.wait([
         _storage!.setTheme(_theme),
         _storage!.setFontHeight(_fontHeight),
-        _storage!.setFontSize(_fontSize)
+        _storage!.setFontSize(_fontSize),
+        _storage!.setWakeUp(_wakeUp)
       ]);
+      wakeUp ? Wakelock.enable() : Wakelock.disable();
     } catch (err) {
       Fluttertoast.showToast(msg: '儲存設定發生錯誤: $err');
     }
@@ -79,6 +89,12 @@ class SettingsStore with ChangeNotifier {
 
   setTheme(ThemeMode theme) {
     _theme = theme;
+    notifyListeners();
+  }
+
+  setWakeUp(bool wakeUp) {
+    _wakeUp = wakeUp;
+    wakeUp ? Wakelock.enable() : Wakelock.disable();
     notifyListeners();
   }
 

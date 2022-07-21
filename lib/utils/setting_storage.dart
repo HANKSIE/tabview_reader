@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-enum Setting { fontSize, fontHeight, themeDark }
+enum Setting { fontSize, fontHeight, themeDark, wakeUp }
 
 extension ParseValueToString on Setting {
   String getValue() {
@@ -25,10 +25,14 @@ class SettingStorage {
     return value ? ThemeMode.dark : ThemeMode.light;
   }
 
+  bool? getWakeUp() => _prefs.getBool(Setting.wakeUp.getValue());
+
   Future<void> setFontSize(double val) =>
       _prefs.setDouble(Setting.fontSize.getValue(), val);
   Future<void> setFontHeight(double val) =>
       _prefs.setDouble(Setting.fontHeight.getValue(), val);
   Future<void> setTheme(ThemeMode theme) =>
       _prefs.setBool(Setting.themeDark.getValue(), theme == ThemeMode.dark);
+  Future<void> setWakeUp(bool val) =>
+      _prefs.setBool(Setting.wakeUp.getValue(), val);
 }

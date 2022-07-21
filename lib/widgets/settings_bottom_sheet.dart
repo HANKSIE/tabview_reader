@@ -74,13 +74,28 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
               Row(children: [
                 const Expanded(
                   child: Text(
+                    '保持開啟',
+                    style: TextStyle(fontSize: 20),
+                  ),
+                ),
+                Expanded(
+                    child: Switch(
+                  value: settingsStore.wakeUp,
+                  onChanged: (bool value) {
+                    settingsStore.setWakeUp(value);
+                  },
+                )),
+              ]),
+              Row(children: [
+                const Expanded(
+                  child: Text(
                     '深色主題',
                     style: TextStyle(fontSize: 20),
                   ),
                 ),
                 Expanded(
                     child: Switch(
-                  value: settingsStore.isDarkTheme,
+                  value: settingsStore.dark,
                   onChanged: (bool value) {
                     settingsStore.toggleTheme();
                   },
