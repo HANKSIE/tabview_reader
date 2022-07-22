@@ -9,7 +9,7 @@ class TabviewReaderGroupStore with ChangeNotifier {
   bool get isNotEmpty => _readers.isNotEmpty;
 
   void restart() {
-    for (var reader in _readers) {
+    for (final reader in _readers) {
       reader.restart();
     }
     _songIndex = 0;
@@ -17,7 +17,7 @@ class TabviewReaderGroupStore with ChangeNotifier {
   }
 
   void reset({num? viewHeight, required num lineHeight}) {
-    for (var reader in _readers) {
+    for (final reader in _readers) {
       reader.reset(viewHeight: viewHeight, lineHeight: lineHeight);
     }
     notifyListeners();

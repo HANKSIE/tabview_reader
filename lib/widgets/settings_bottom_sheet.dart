@@ -14,8 +14,8 @@ class SettingsBottomSheet extends StatefulWidget {
 class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
   @override
   Widget build(BuildContext context) {
-    var settingsStore = Provider.of<SettingsStore>(context, listen: true);
-    var readerGroupStore =
+    final settingsStore = Provider.of<SettingsStore>(context, listen: true);
+    final readerGroupStore =
         Provider.of<TabviewReaderGroupStore>(context, listen: false);
 
     List<ControlConfig> configs = [
@@ -49,7 +49,7 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
       child: ListView(
         children: [
           [
-            for (var config in configs)
+            for (final config in configs)
               Row(children: [
                 Expanded(
                   child: Text(

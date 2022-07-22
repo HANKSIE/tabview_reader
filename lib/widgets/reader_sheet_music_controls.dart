@@ -35,7 +35,7 @@ class TabviewReaderSheetMusicControls extends StatelessWidget {
                 target: readerGroup.nextSong, doneTip: '已經是最後一首了'))
       ];
       return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-        for (var config in configs)
+        for (final config in configs)
           Tooltip(
               message: config.tip,
               child: IconButton(

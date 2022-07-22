@@ -81,7 +81,7 @@ class _TabViewPageState extends State<TabViewPage> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                    for (var text in readerGroup.reader?.page)
+                                    for (final text in readerGroup.reader?.page)
                                       Text(text,
                                           style: TextStyle(
                                             height: settings.fontHeight,

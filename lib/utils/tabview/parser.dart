@@ -3,11 +3,11 @@ import 'package:tabview_reader/models/sheet_music.dart';
 class TabviewParser {
   static SheetMusic exec({required String name, required String content}) {
     try {
-      var lineNo = _extract(content, 'LineNo').split(',');
+      final lineNo = _extract(content, 'LineNo').split(',');
       lineNo.removeLast();
       var lines = _extract(content, 'Tabs').split('\n');
       lines = lines.sublist(1, lines.length - 1);
-      var sheetMusic = SheetMusic(
+      final sheetMusic = SheetMusic(
           name: name,
           heads: lineNo.map((ch) => int.parse(ch) - 2).toList(),
           lines: lines);
@@ -20,9 +20,9 @@ class TabviewParser {
 
   static _validate(SheetMusic sheetMusic) {
     int prev = -1;
-    var heads = sheetMusic.heads, lines = sheetMusic.lines;
+    final heads = sheetMusic.heads, lines = sheetMusic.lines;
     if (heads.isEmpty || lines.isEmpty) return false;
-    for (int head in heads) {
+    for (final head in heads) {
       if (head < prev || head + 7 > lines.length) {
         return false;
       }

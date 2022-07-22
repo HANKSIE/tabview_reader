@@ -25,17 +25,17 @@ class _NormalControlsState extends State<TabviewReaderControls> {
     return size != null ? size.height : 0;
   }
 
-  _fileOpen() async {
+  _createReaderFromPicker() async {
     try {
-      var result = await FilePicker.platform.pickFiles();
+      final result = await FilePicker.platform.pickFiles();
       if (result == null) return;
-      var file = File(result.files.single.path!);
-      var content = file.readAsStringSync();
-      var sheetMusic =
+      final file = File(result.files.single.path!);
+      final content = file.readAsStringSync();
+      final sheetMusic =
           TabviewParser.exec(name: path.basename(file.path), content: content);
-      var lineHeight =
+      final lineHeight =
           Provider.of<SettingsStore>(context, listen: false).lineHeight;
-      var readerGroupStore =
+      final readerGroupStore =
           Provider.of<TabviewReaderGroupStore>(context, listen: false);
       readerGroupStore.clear();
       readerGroupStore.add(
@@ -53,8 +53,9 @@ class _NormalControlsState extends State<TabviewReaderControls> {
     return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
       Tooltip(
         message: '選擇檔案',
-        child:
-            IconButton(icon: const Icon(Icons.file_open), onPressed: _fileOpen),
+        child: IconButton(
+            icon: const Icon(Icons.file_open),
+            onPressed: _createReaderFromPicker),
       ),
       Tooltip(
         message: '搜尋',
