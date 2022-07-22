@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:path/path.dart' as path;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tabview_reader/models/radio_control_config.dart';
-import 'package:tabview_reader/utils/tabview/validation.dart';
+import 'package:tabview_reader/store/search_payload.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -18,37 +16,40 @@ class _SearchPageState extends State<SearchPage> {
   int? _selected2 = 0;
   int? _selected3 = 0;
   int? _selected4 = 0;
-  final List<File> _files = [];
-  final String _keyword = '';
-  _search() async {
-    String? dir = await FilePicker.platform.getDirectoryPath();
-    if (dir == null) return;
-    try {
-      final fileStream = _scanningFilesWithAsyncRecursive(Directory(dir));
-      final validation = TabviewValidation(
-          keyword: _keyword,
-          selects: '$_selected1$_selected2$_selected3$_selected4');
-      _files.clear();
-      await for (final file in fileStream) {
-        final filename = path.basename(file.path);
-        if (validation.exec(filename)) {
-          _files.add(file);
-        }
-      }
-    } catch (err) {
-      Fluttertoast.showToast(msg: 'Error: $err');
-    }
+
+  String _keyword = '';
+
+  late final TextEditingController _keywordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _keywordController.text = _keyword;
   }
 
-  Stream<File> _scanningFilesWithAsyncRecursive(Directory dir) async* {
-    var dirList = dir.list();
-    await for (final FileSystemEntity entity in dirList) {
-      if (entity is File) {
-        yield entity;
-      } else if (entity is Directory) {
-        yield* _scanningFilesWithAsyncRecursive(Directory(entity.path));
-      }
+  @override
+  void dispose() {
+    super.dispose();
+    _keywordController.dispose();
+  }
+
+  _search() async {
+    if (await Permission.storage.isDenied) {
+      await Permission.storage.request();
     }
+
+    if (await Permission.storage.isDenied) {
+      Fluttertoast.showToast(msg: '請啟用讀取權限以啟用搜尋功能');
+    }
+
+    String? dir = await FilePicker.platform.getDirectoryPath();
+    if (dir == null) return;
+
+    Navigator.of(context).pushNamed('/search/result',
+        arguments: SearchPayload(
+            dir: dir,
+            selects: '$_selected1$_selected2$_selected3$_selected4',
+            keyword: _keyword));
   }
 
   @override
@@ -95,12 +96,14 @@ class _SearchPageState extends State<SearchPage> {
             RadioControlUnitConfig<int>(label: labels[i], value: i),
         ]);
     final configs = [config1, config2, config3, config4];
-    int i = 0;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('搜尋'),
       ),
       body: SingleChildScrollView(
+          child: Container(
+        padding: const EdgeInsets.all(20),
         child: Column(
             children: [
           [
@@ -109,6 +112,7 @@ class _SearchPageState extends State<SearchPage> {
                 Text(config.label),
                 for (final unit in config.units)
                   RadioListTile<int>(
+                    contentPadding: EdgeInsets.zero,
                     title: Text(unit.label),
                     groupValue: config.groupValue,
                     value: unit.value,
@@ -116,9 +120,35 @@ class _SearchPageState extends State<SearchPage> {
                   )
               ])
           ],
-          [TextButton(onPressed: _search, child: const Text('搜尋'))]
+          [
+            const SizedBox(height: 10),
+            TextField(
+                controller: _keywordController,
+                decoration: const InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: '輸入關鍵字',
+                ),
+                onChanged: (val) {
+                  setState(() {
+                    _keyword = val;
+                  });
+                }),
+            const SizedBox(height: 50),
+            Row(
+              children: [
+                Expanded(
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(fontSize: 20),
+                          padding: const EdgeInsets.only(top: 10, bottom: 10),
+                        ),
+                        onPressed: _search,
+                        child: const Text('搜尋')))
+              ],
+            )
+          ]
         ].expand((widget) => widget).toList()),
-      ),
+      )),
     );
   }
 }

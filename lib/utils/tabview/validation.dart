@@ -19,9 +19,11 @@ class TabviewValidation {
     };
   }
 
-  bool _keywordValidate(Args args) => args.filename.contains(_keyword);
+  bool _keywordValidate(Args args) => _keyword.isEmpty && args.options == null
+      ? false
+      : args.filename.toLowerCase().contains(_keyword.toLowerCase());
 
-  exec(String filename) async {
+  bool exec(String filename) {
     final options = RegExp(r'=([0-4]{4}).txt').firstMatch(filename)?.group(1);
     return MultiConditionValidation<Args>(
             validates: [
