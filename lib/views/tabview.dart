@@ -77,28 +77,14 @@ class _TabViewPageState extends State<TabViewPage> {
                             nextPage();
                           }
                         },
-                        // expanded 嵌套是為了 width height 自動擴展到最大
-                        child: Column(children: [
-                          Expanded(
-                              child: Row(
-                            children: [
-                              Expanded(
-                                  child: SingleChildScrollView(
-                                      // 為了些微誤差允許滾動
-                                      child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                    for (final text in readerGroup.reader?.page)
-                                      Text(text,
-                                          style: TextStyle(
-                                            height: settings.fontHeight,
-                                            fontSize: settings.fontSize,
-                                            fontFamily: 'Roboto Mono',
-                                          ))
-                                  ])))
-                            ],
-                          ))
+                        child: ListView(children: [
+                          for (final text in readerGroup.reader?.page)
+                            Text(text,
+                                style: TextStyle(
+                                  height: settings.fontHeight,
+                                  fontSize: settings.fontSize,
+                                  fontFamily: 'Roboto Mono',
+                                ))
                         ]));
               },
             );
