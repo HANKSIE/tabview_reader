@@ -108,41 +108,78 @@ class _SearchResultPageState extends State<SearchResultPage> {
                     : Column(
                         children: [
                           Expanded(
-                              flex: 11,
-                              child: ListView(
-                                children: [
-                                  ...[
-                                    for (final file in _files)
-                                      CheckboxListTile(
-                                          checkColor: Colors.teal,
-                                          title: Text(path.basename(file.path)),
-                                          value: _selects.contains(file),
-                                          onChanged: (bool? value) {
-                                            if (value == null) return;
-                                            setState(() {
-                                              value
-                                                  ? _selects.add(file)
-                                                  : _selects.remove(file);
-                                            });
-                                          })
-                                  ],
-                                ],
-                              )),
-                          Expanded(
-                              child: Row(
+                              child: Column(
                             children: [
+                              const Expanded(child: Text('選擇樂譜')),
                               Expanded(
-                                  child: ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        textStyle:
-                                            const TextStyle(fontSize: 20),
-                                        padding: const EdgeInsets.only(
-                                            top: 10, bottom: 10),
-                                      ),
-                                      onPressed: _initReaders,
-                                      child: const Text('播放')))
+                                  flex: 5,
+                                  child: ListView.builder(
+                                      itemCount: _files.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        final file = _files[index];
+                                        return CheckboxListTile(
+                                            checkColor: Colors.teal,
+                                            title:
+                                                Text(path.basename(file.path)),
+                                            value: _selects.contains(file),
+                                            onChanged: (bool? value) {
+                                              if (value == null) return;
+                                              setState(() {
+                                                value
+                                                    ? _selects.add(file)
+                                                    : _selects.remove(file);
+                                              });
+                                            });
+                                      }))
                             ],
-                          ))
+                          )),
+                          Expanded(
+                              child: Column(
+                            children: [
+                              const Expanded(child: Text('播放順序')),
+                              Expanded(
+                                  flex: 5,
+                                  child: ReorderableListView.builder(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 40),
+                                    itemCount: _selects.length,
+                                    itemBuilder: (context, index) {
+                                      final file = _selects[index];
+                                      return ListTile(
+                                        key: Key(file.path),
+                                        title: Text(path.basename(file.path)),
+                                      );
+                                    },
+                                    onReorder: (int oldIndex, int newIndex) {
+                                      setState(() {
+                                        if (oldIndex < newIndex) {
+                                          newIndex -= 1;
+                                        }
+                                        final file =
+                                            _selects.removeAt(oldIndex);
+                                        _selects.insert(newIndex, file);
+                                      });
+                                    },
+                                  ))
+                            ],
+                          )),
+                          Expanded(
+                              flex: 0,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            textStyle:
+                                                const TextStyle(fontSize: 20),
+                                            padding: const EdgeInsets.only(
+                                                top: 10, bottom: 10),
+                                          ),
+                                          onPressed: _initReaders,
+                                          child: const Text('播放')))
+                                ],
+                              ))
                         ],
                       ))
             : Text(

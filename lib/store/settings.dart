@@ -73,10 +73,10 @@ class SettingsStore with ChangeNotifier {
   Future<void> save() async {
     try {
       await Future.wait([
-        _storage!.setTheme(_theme),
-        _storage!.setFontHeight(_fontHeight),
-        _storage!.setFontSize(_fontSize),
-        _storage!.setWakeUp(_wakeUp)
+        setTheme(_theme),
+        setFontHeight(_fontHeight),
+        setFontSize(_fontSize),
+        setWakeUp(_wakeUp)
       ]);
       wakeUp ? Wakelock.enable() : Wakelock.disable();
     } catch (err) {
@@ -84,30 +84,35 @@ class SettingsStore with ChangeNotifier {
     }
   }
 
-  setFontSize(double fontSize) {
+  Future<void> setFontSize(double fontSize) {
     _fontSize = fontSize;
     notifyListeners();
+    return _storage!.setFontSize(_fontSize);
   }
 
-  setFontHeight(double fontHeight) {
+  Future<void> setFontHeight(double fontHeight) {
     _fontHeight = fontHeight;
     notifyListeners();
+    return _storage!.setFontHeight(_fontHeight);
   }
 
-  setTheme(ThemeMode theme) {
+  Future<void> setTheme(ThemeMode theme) {
     _theme = theme;
     notifyListeners();
+    return _storage!.setTheme(_theme);
   }
 
-  setWakeUp(bool wakeUp) {
+  Future<void> setWakeUp(bool wakeUp) {
     _wakeUp = wakeUp;
     wakeUp ? Wakelock.enable() : Wakelock.disable();
     notifyListeners();
+    return _storage!.setWakeUp(_wakeUp);
   }
 
-  setSearchFolder(String val) {
+  Future<void> setSearchFolder(String val) {
     _searchFolder = val;
     notifyListeners();
+    return _storage!.setSearchFolder(_searchFolder);
   }
 
   toggleTheme() {
