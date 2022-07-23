@@ -12,7 +12,9 @@ class TabviewReaderSheetMusicControls extends StatelessWidget {
         builder: (context, readerGroup, child) {
       List<ControlConfig> configs = [
         ControlConfig(
-            tip: '關閉', iconData: Icons.close, onPressed: readerGroup.clear),
+            tip: '關閉',
+            iconData: Icons.close,
+            onPressed: readerGroup.clearAndRestart),
         ControlConfig(
             tip: '上一首',
             iconData: Icons.keyboard_double_arrow_left,

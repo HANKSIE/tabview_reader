@@ -17,9 +17,19 @@ class _TabViewPageState extends State<TabViewPage> {
   Orientation? _orientation;
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      final readerGroupStore =
+          Provider.of<TabviewReaderGroupStore>(context, listen: false);
+      readerGroupStore.setViewKey(_viewKey);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(actions: [
+        appBar: AppBar(automaticallyImplyLeading: false, actions: [
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
             Consumer<TabviewReaderGroupStore>(
                 builder: (context, readerGroup, child) {
@@ -27,9 +37,7 @@ class _TabViewPageState extends State<TabViewPage> {
                   ? const SizedBox.shrink()
                   : const TabviewReaderSheetMusicControls();
             }),
-            TabviewReaderControls(
-              viewKey: _viewKey,
-            )
+            const TabviewReaderControls()
           ])
         ]),
         body: Consumer2<TabviewReaderGroupStore, SettingsStore>(

@@ -16,22 +16,22 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(
-              create: (context) => TabviewReaderGroupStore()),
-          ChangeNotifierProvider(create: (context) => SettingsStore()),
-        ],
-        child: Consumer<SettingsStore>(builder: (context, settings, child) {
-          return MaterialApp(
-            routes: routes,
-            theme: ThemeData(
-                brightness: Brightness.light, primarySwatch: Colors.teal),
-            darkTheme: ThemeData(
-                brightness: Brightness.dark, primarySwatch: Colors.teal),
-            themeMode: settings.theme,
-            debugShowCheckedModeBanner: false,
-            home: const TabViewPage(),
-          );
-        }));
+      providers: [
+        ChangeNotifierProvider(create: (context) => TabviewReaderGroupStore()),
+        ChangeNotifierProvider(create: (context) => SettingsStore()),
+      ],
+      child: Consumer<SettingsStore>(builder: (context, settings, child) {
+        return MaterialApp(
+          routes: routes,
+          theme: ThemeData(
+              brightness: Brightness.light, primarySwatch: Colors.teal),
+          darkTheme: ThemeData(
+              brightness: Brightness.dark, primarySwatch: Colors.teal),
+          themeMode: settings.theme,
+          debugShowCheckedModeBanner: false,
+          home: const TabViewPage(),
+        );
+      }),
+    );
   }
 }

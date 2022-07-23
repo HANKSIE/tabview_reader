@@ -48,7 +48,7 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
       padding: const EdgeInsets.all(50),
       child: ListView(
         children: [
-          [
+          ...[
             for (final config in configs)
               Row(children: [
                 Expanded(
@@ -68,54 +68,51 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
                 ))
               ])
           ],
-          [
-            Row(children: [
-              const Expanded(
-                child: Text(
-                  '保持開啟',
-                  style: TextStyle(fontSize: 20),
-                ),
+          Row(children: [
+            const Expanded(
+              child: Text(
+                '保持開啟',
+                style: TextStyle(fontSize: 20),
               ),
-              Expanded(
-                  child: Switch(
-                value: settingsStore.wakeUp,
-                onChanged: (bool value) {
-                  settingsStore.setWakeUp(value);
-                },
-              )),
-            ]),
-            Row(children: [
-              const Expanded(
-                child: Text(
-                  '深色主題',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-              Expanded(
-                  child: Switch(
-                value: settingsStore.dark,
-                onChanged: (bool value) {
-                  settingsStore.toggleTheme();
-                },
-              ))
-            ]),
-            const SizedBox(
-              height: 50,
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 20),
-                padding: const EdgeInsets.only(top: 10, bottom: 10),
-              ),
-              onPressed: () async {
-                await settingsStore.save();
-                Fluttertoast.showToast(
-                    msg: '已儲存', gravity: ToastGravity.CENTER);
+            Expanded(
+                child: Switch(
+              value: settingsStore.wakeUp,
+              onChanged: (bool value) {
+                settingsStore.setWakeUp(value);
               },
-              child: const Text('儲存'),
+            )),
+          ]),
+          Row(children: [
+            const Expanded(
+              child: Text(
+                '深色主題',
+                style: TextStyle(fontSize: 20),
+              ),
             ),
-          ]
-        ].expand((widget) => widget).toList(),
+            Expanded(
+                child: Switch(
+              value: settingsStore.dark,
+              onChanged: (bool value) {
+                settingsStore.toggleTheme();
+              },
+            ))
+          ]),
+          const SizedBox(
+            height: 50,
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              textStyle: const TextStyle(fontSize: 20),
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+            ),
+            onPressed: () async {
+              await settingsStore.save();
+              Fluttertoast.showToast(msg: '已儲存', gravity: ToastGravity.CENTER);
+            },
+            child: const Text('儲存'),
+          ),
+        ],
       ),
     );
   }

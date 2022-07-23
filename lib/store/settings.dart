@@ -9,6 +9,7 @@ class SettingsStore with ChangeNotifier {
   double _fontHeight = 1.2;
   ThemeMode _theme = ThemeMode.dark;
   bool _wakeUp = false;
+  String _searchFolder = '';
 
   SettingStorage? _storage;
   get fontSize => _fontSize;
@@ -16,6 +17,7 @@ class SettingsStore with ChangeNotifier {
   get lineHeight => _fontSize * _fontHeight;
   get theme => _theme;
   get wakeUp => _wakeUp;
+  get searchFolder => _searchFolder;
   get dark => _theme == ThemeMode.dark;
 
   SettingsStore() {
@@ -46,6 +48,11 @@ class SettingsStore with ChangeNotifier {
           storeValue: wakeUp,
           setStorage: _storage!.setWakeUp,
           setStore: setWakeUp);
+      _sync<String>(
+          storageValue: _storage!.getSearchFolder(),
+          storeValue: searchFolder,
+          setStorage: _storage!.setSearchFolder,
+          setStore: setSearchFolder);
     } catch (err) {
       Fluttertoast.showToast(msg: '設定檔同步錯誤: $err');
     }
@@ -95,6 +102,11 @@ class SettingsStore with ChangeNotifier {
   setWakeUp(bool wakeUp) {
     _wakeUp = wakeUp;
     wakeUp ? Wakelock.enable() : Wakelock.disable();
+    notifyListeners();
+  }
+
+  setSearchFolder(String val) {
+    _searchFolder = val;
     notifyListeners();
   }
 

@@ -12,35 +12,30 @@ import 'package:tabview_reader/utils/tabview/reader.dart';
 import 'package:tabview_reader/widgets/settings_bottom_sheet.dart';
 
 class TabviewReaderControls extends StatefulWidget {
-  const TabviewReaderControls({Key? key, required this.viewKey})
-      : super(key: key);
-  final GlobalKey<State<StatefulWidget>> viewKey;
+  const TabviewReaderControls({Key? key}) : super(key: key);
   @override
   State<TabviewReaderControls> createState() => _NormalControlsState();
 }
 
 class _NormalControlsState extends State<TabviewReaderControls> {
-  _getViewHeight() {
-    final size = widget.viewKey.currentContext?.size;
-    return size != null ? size.height : 0;
-  }
-
   _createReaderFromPicker() async {
     try {
       final result = await FilePicker.platform.pickFiles();
       if (result == null) return;
       final file = File(result.files.single.path!);
-      final content = file.readAsStringSync();
+      final content = await file.readAsString();
       final sheetMusic =
           TabviewParser.exec(name: path.basename(file.path), content: content);
       final lineHeight =
           Provider.of<SettingsStore>(context, listen: false).lineHeight;
+
       final readerGroupStore =
           Provider.of<TabviewReaderGroupStore>(context, listen: false);
-      readerGroupStore.clear();
+
+      readerGroupStore.clearAndRestart();
       readerGroupStore.add(
           reader: TabviewReader(
-              viewHeight: _getViewHeight(),
+              viewHeight: readerGroupStore.viewHeight,
               lineHeight: lineHeight,
               sheetMusic: sheetMusic));
     } catch (e) {

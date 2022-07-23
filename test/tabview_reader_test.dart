@@ -16,8 +16,8 @@ void main() {
     expect(reader.viewLines, 16);
     expect(
         const DeepCollectionEquality().equals(reader.pages, [
-          [for (var i = 2; i <= 17; i++) '$i'],
-          [for (var i = 18; i <= 24; i++) '$i'],
+          [for (var i = 0; i <= 8; i++) '$i'],
+          [for (var i = 11; i <= 24; i++) '$i'],
           [for (var i = 29; i <= 35; i++) '$i'],
         ]),
         true);

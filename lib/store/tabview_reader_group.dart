@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:tabview_reader/utils/tabview/reader.dart';
 
 class TabviewReaderGroupStore with ChangeNotifier {
@@ -7,6 +7,18 @@ class TabviewReaderGroupStore with ChangeNotifier {
   TabviewReader? get reader => _readers.isEmpty ? null : _readers[_songIndex];
   bool get isEmpty => _readers.isEmpty;
   bool get isNotEmpty => _readers.isNotEmpty;
+
+  GlobalKey<State<StatefulWidget>>? viewKey;
+
+  setViewKey(GlobalKey<State<StatefulWidget>> key) {
+    viewKey = key;
+    notifyListeners();
+  }
+
+  get viewHeight {
+    final size = viewKey?.currentContext?.size;
+    return size?.height ?? 0;
+  }
 
   void restart() {
     for (final reader in _readers) {
@@ -28,8 +40,9 @@ class TabviewReaderGroupStore with ChangeNotifier {
     notifyListeners();
   }
 
-  void clear() {
+  void clearAndRestart() {
     _readers.clear();
+    _songIndex = 0;
     notifyListeners();
   }
 
@@ -37,6 +50,7 @@ class TabviewReaderGroupStore with ChangeNotifier {
     var isDone = _readers.length - 1 == _songIndex;
     if (!isDone) {
       _songIndex++;
+      reader?.restart();
       notifyListeners();
     }
     return isDone;
@@ -46,6 +60,7 @@ class TabviewReaderGroupStore with ChangeNotifier {
     var isDone = _songIndex == 0;
     if (!isDone) {
       _songIndex--;
+      reader?.restart();
       notifyListeners();
     }
     return isDone;

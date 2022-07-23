@@ -44,7 +44,7 @@ class TabviewReader {
       {required SheetMusic sheetMusic, required int viewLines}) {
     var lines = sheetMusic.lines;
     var heads = sheetMusic.heads;
-    int start = heads[0];
+    int start = 0;
     List<List<String>> pages = [];
 
     for (int i = 0; i <= heads.length; i++) {
