@@ -42,12 +42,27 @@ class TabviewReader {
 
   static List<List<String>> _buildPages(
       {required SheetMusic sheetMusic, required int viewLines}) {
-    var lines = sheetMusic.lines;
-    var heads = sheetMusic.heads;
+    if (viewLines < 7) throw Exception('行高少於7');
+    final lines = sheetMusic.lines;
+    final heads = sheetMusic.heads;
     int start = 0;
-    List<List<String>> pages = [];
+    final List<List<String>> pages = [];
 
-    for (int i = 0; i <= heads.length; i++) {
+    if (heads[0] > viewLines) {
+      final prePageCount = heads[0] ~/ viewLines;
+      final remain = heads[0] % viewLines;
+      for (int j = 1; j <= prePageCount; j++) {
+        pages.add([for (int k = start; k < viewLines * j; k++) lines[k]]);
+        start = viewLines * j;
+      }
+
+      if (remain > 0) {
+        pages.add([for (int j = start; j < start + remain; j++) lines[j]]);
+      }
+      start = heads[0];
+    }
+
+    for (int i = 1; i <= heads.length; i++) {
       if (i == heads.length) {
         final end = heads[i - 1] + 6;
         pages.add([for (int j = start; j <= end; j++) lines[j]]);
