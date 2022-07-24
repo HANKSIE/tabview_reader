@@ -22,4 +22,21 @@ void main() {
         ]),
         true);
   });
+
+  test('tab view build page test when long pre-content.', () {
+    var reader = TabviewReader(
+        viewHeight: 16,
+        lineHeight: 1,
+        sheetMusic: SheetMusic(
+            name: 'papaya',
+            heads: [10],
+            lines: [for (var i = 0; i <= 20; i++) '$i']));
+    expect(reader.viewLines, 16);
+    expect(
+        const DeepCollectionEquality().equals(reader.pages, [
+          [for (var i = 0; i <= 9; i++) '$i'],
+          [for (var i = 10; i <= 16; i++) '$i']
+        ]),
+        true);
+  });
 }

@@ -21,7 +21,7 @@ class _SearchResultPageState extends State<SearchResultPage> {
   final List<File> _files = [];
   final List<File> _selects = [];
   String? _error;
-  double _progress = 0;
+  bool _loadCompleted = false;
   @override
   initState() {
     super.initState();
@@ -37,10 +37,6 @@ class _SearchResultPageState extends State<SearchResultPage> {
       _files.clear();
     });
     try {
-      // final entitiesStream = Directory(payload.dir).list(recursive: true);
-      final entitiesCount =
-          await Directory(payload.dir).list(recursive: true).length;
-      final divisions = 100 / entitiesCount;
       await for (final entity in Directory(payload.dir).list(recursive: true)) {
         if (entity is File) {
           final filename = path.basename(entity.path);
@@ -50,13 +46,13 @@ class _SearchResultPageState extends State<SearchResultPage> {
             });
           }
         }
-        setState(() {
-          _progress += divisions;
-        });
       }
     } catch (err) {
       _error = err.toString();
     }
+    setState(() {
+      _loadCompleted = true;
+    });
   }
 
   _initReaders() async {
@@ -88,23 +84,12 @@ class _SearchResultPageState extends State<SearchResultPage> {
         body: _error == null
             ? Container(
                 padding: const EdgeInsets.all(30),
-                child: _progress.round() < 100
-                    ? Center(
-                        child: IntrinsicHeight(
-                            child: Column(
-                        children: [
-                          Text(
-                            '搜尋中... ${_progress.round()}%',
-                            style: const TextStyle(fontSize: 30),
-                          ),
-                          const SizedBox(height: 30),
-                          LinearProgressIndicator(
-                            value: _progress,
-                            minHeight: 30,
-                            semanticsLabel: '$_progress %',
-                          )
-                        ],
-                      )))
+                child: !_loadCompleted
+                    ? const Center(
+                        child: Text(
+                        '搜尋中...',
+                        style: TextStyle(fontSize: 30),
+                      ))
                     : Column(
                         children: [
                           Expanded(

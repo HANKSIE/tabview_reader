@@ -48,14 +48,13 @@ class TabviewReader {
     int start = 0;
     final List<List<String>> pages = [];
 
-    if (heads[0] > viewLines) {
+    if (heads[0] + 6 > viewLines - 1) {
       final prePageCount = heads[0] ~/ viewLines;
       final remain = heads[0] % viewLines;
       for (int j = 1; j <= prePageCount; j++) {
         pages.add([for (int k = start; k < viewLines * j; k++) lines[k]]);
         start = viewLines * j;
       }
-
       if (remain > 0) {
         pages.add([for (int j = start; j < start + remain; j++) lines[j]]);
       }
@@ -66,7 +65,7 @@ class TabviewReader {
       if (i == heads.length) {
         final end = heads[i - 1] + 6;
         pages.add([for (int j = start; j <= end; j++) lines[j]]);
-      } else if (heads[i] + 6 > start + viewLines) {
+      } else if (heads[i] + 6 > start + viewLines - 1) {
         final end = heads[i - 1] + 6;
         pages.add([for (int j = start; j <= end; j++) lines[j]]);
         start = heads[i];
