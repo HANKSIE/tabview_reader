@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tabview_reader/store/settings.dart';
 import 'package:tabview_reader/store/tabview_reader_group.dart';
 import 'package:tabview_reader/utils/tabview/readerControlWrapper.dart';
+import 'package:tabview_reader/utils/throttle.dart';
 import 'package:tabview_reader/widgets/reader_controls.dart';
 import 'package:tabview_reader/widgets/reader_sheet_music_controls.dart';
 
@@ -16,13 +17,26 @@ class _TabViewPageState extends State<TabViewPage> {
   final _viewKey = GlobalKey();
   Orientation? _orientation;
 
+  late final Function _prevPage;
+  late final Function _nextPage;
+  late final Function _nextPageThrottle;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       final readerGroupStore =
           Provider.of<TabviewReaderGroupStore>(context, listen: false);
+
       readerGroupStore.setViewKey(_viewKey);
+
+      _prevPage = readerControlWrapper(
+          target: readerGroupStore.prevPage, doneTip: '已經是第一頁了');
+
+      _nextPage = readerControlWrapper(
+          target: readerGroupStore.nextPage, doneTip: '已經是最後一頁了');
+
+      _nextPageThrottle = throttle(_nextPage, 1500);
     });
   }
 
@@ -55,10 +69,6 @@ class _TabViewPageState extends State<TabViewPage> {
             return Builder(
               key: _viewKey,
               builder: (context) {
-                final prevPage = readerControlWrapper(
-                    target: readerGroup.prevPage, doneTip: '已經是第一頁了');
-                final nextPage = readerControlWrapper(
-                    target: readerGroup.nextPage, doneTip: '已經是最後一頁了');
                 return readerGroup.isEmpty
                     ? const Center(
                         child: Text(
@@ -67,14 +77,14 @@ class _TabViewPageState extends State<TabViewPage> {
                       ))
                     : GestureDetector(
                         onTapUp: (TapUpDetails details) {
-                          nextPage();
+                          _nextPageThrottle();
                         },
                         onHorizontalDragEnd: (DragEndDetails details) {
                           if (details.velocity.pixelsPerSecond.dx > 0) {
-                            prevPage();
+                            _prevPage();
                           }
                           if (details.velocity.pixelsPerSecond.dx < 0) {
-                            nextPage();
+                            _nextPage();
                           }
                         },
                         child: ListView(children: [
