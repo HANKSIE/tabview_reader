@@ -23,12 +23,17 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
     _audioPlayer.setSource(AssetSource('audios/metronome.wav'));
   }
 
-  _getStartTimer() =>
-      Timer.periodic(Duration(milliseconds: 60000 ~/ _bpm), (timer) async {
+  _restartTimer() {
+    _timer?.cancel();
+    if (_isPlaying) {
+      _timer =
+          Timer.periodic(Duration(milliseconds: 60000 ~/ _bpm), (timer) async {
         // restart
         await _audioPlayer.seek(const Duration(milliseconds: 0));
         _audioPlayer.resume();
       });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +46,7 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
               TextSpan(
                   text: '${_bpm.toInt()}',
                   style: const TextStyle(fontSize: 50)),
+              const WidgetSpan(child: SizedBox(width: 10)),
               const TextSpan(text: '每分鐘心跳數 (BPM)'),
             ]),
           ),
@@ -56,24 +62,19 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
               setState(() {
                 _bpm = val;
               });
-              if (_isPlaying) {
-                _timer?.cancel();
-                _timer = _getStartTimer();
-              }
+              _restartTimer();
             },
           ),
         ),
         SimpleDialogOption(
             child: IconButton(
-                icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow),
+                icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow_rounded),
                 onPressed: () async {
                   setState(() {
                     _isPlaying = !_isPlaying;
                   });
-                  _timer?.cancel();
-                  if (_isPlaying) {
-                    _timer = _getStartTimer();
-                  }
+
+                  _restartTimer();
                 })),
       ],
     );
