@@ -9,6 +9,7 @@ import 'package:tabview_reader/store/settings.dart';
 import 'package:tabview_reader/store/tabview_reader_group.dart';
 import 'package:tabview_reader/utils/tabview/parser.dart';
 import 'package:tabview_reader/utils/tabview/reader.dart';
+import 'package:tabview_reader/widgets/metronome_simple_dialog.dart';
 import 'package:tabview_reader/widgets/settings_bottom_sheet.dart';
 
 class TabviewReaderControls extends StatefulWidget {
@@ -46,6 +47,18 @@ class _NormalControlsState extends State<TabviewReaderControls> {
   @override
   Widget build(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+      Tooltip(
+        message: '節拍器',
+        child: IconButton(
+            icon: const Icon(Icons.music_note),
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (context) {
+                    return const MetronomeSimpleDialog();
+                  });
+            }),
+      ),
       Tooltip(
         message: '選擇檔案',
         child: IconButton(

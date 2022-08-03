@@ -1,0 +1,81 @@
+import 'dart:async';
+
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/material.dart';
+
+class MetronomeSimpleDialog extends StatefulWidget {
+  const MetronomeSimpleDialog({Key? key}) : super(key: key);
+
+  @override
+  State<MetronomeSimpleDialog> createState() => _MetronomeSimpleDialogState();
+}
+
+class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
+  final double _min = 40;
+  final double _max = 218;
+  double _bpm = 40;
+  bool _isPlaying = false;
+
+  late final AudioPlayer _audioPlayer;
+  Timer? _timer;
+  _MetronomeSimpleDialogState() {
+    _audioPlayer = AudioPlayer();
+    _audioPlayer.setSource(AssetSource('audios/metronome.wav'));
+  }
+
+  _getStartTimer() =>
+      Timer.periodic(Duration(milliseconds: 60000 ~/ _bpm), (timer) async {
+        // restart
+        await _audioPlayer.seek(const Duration(milliseconds: 0));
+        _audioPlayer.resume();
+      });
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      alignment: Alignment.bottomCenter,
+      children: <Widget>[
+        SimpleDialogOption(
+          child: RichText(
+            text: TextSpan(children: [
+              TextSpan(
+                  text: '${_bpm.toInt()}',
+                  style: const TextStyle(fontSize: 50)),
+              const TextSpan(text: '每分鐘心跳數 (BPM)'),
+            ]),
+          ),
+        ),
+        SimpleDialogOption(
+          child: Slider(
+            value: _bpm,
+            min: _min,
+            max: _max,
+            divisions: (_max - _min).toInt(),
+            label: '${_bpm.toInt()} BPM',
+            onChanged: (double val) {
+              setState(() {
+                _bpm = val;
+              });
+              if (_isPlaying) {
+                _timer?.cancel();
+                _timer = _getStartTimer();
+              }
+            },
+          ),
+        ),
+        SimpleDialogOption(
+            child: IconButton(
+                icon: Icon(_isPlaying ? Icons.stop : Icons.play_arrow),
+                onPressed: () async {
+                  setState(() {
+                    _isPlaying = !_isPlaying;
+                  });
+                  _timer?.cancel();
+                  if (_isPlaying) {
+                    _timer = _getStartTimer();
+                  }
+                })),
+      ],
+    );
+  }
+}

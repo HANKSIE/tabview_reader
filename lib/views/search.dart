@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/models/radio_control_config.dart';
-import 'package:tabview_reader/store/search_payload.dart';
+import 'package:tabview_reader/models/search_payload.dart';
 import 'package:tabview_reader/store/settings.dart';
 
 class SearchPage extends StatefulWidget {

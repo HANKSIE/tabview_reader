@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart' as path;
 import 'package:provider/provider.dart';
-import 'package:tabview_reader/store/search_payload.dart';
+import 'package:tabview_reader/models/search_payload.dart';
 import 'package:tabview_reader/store/settings.dart';
 import 'package:tabview_reader/store/tabview_reader_group.dart';
 import 'package:tabview_reader/utils/tabview/parser.dart';

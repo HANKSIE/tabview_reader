@@ -6,15 +6,14 @@ import 'package:wakelock/wakelock.dart';
 
 class SettingsStore with ChangeNotifier {
   double _fontSize = 8;
-  double _fontHeight = 1.2;
   ThemeMode _theme = ThemeMode.dark;
   bool _wakeUp = false;
   String _searchFolder = '';
 
   SettingStorage? _storage;
   get fontSize => _fontSize;
-  get fontHeight => _fontHeight;
-  get lineHeight => _fontSize * _fontHeight;
+  final double fontHeight = 1.5;
+  get lineHeight => _fontSize * fontHeight;
   get theme => _theme;
   get wakeUp => _wakeUp;
   get searchFolder => _searchFolder;
@@ -33,11 +32,6 @@ class SettingsStore with ChangeNotifier {
           storeValue: fontSize,
           setStorage: _storage!.setFontSize,
           setStore: setFontSize);
-      _sync<double>(
-          storageValue: _storage!.getFontHeight(),
-          storeValue: fontHeight,
-          setStorage: _storage!.setFontHeight,
-          setStore: setFontHeight);
       _sync<ThemeMode>(
           storageValue: _storage!.getTheme(),
           storeValue: theme,
@@ -70,30 +64,10 @@ class SettingsStore with ChangeNotifier {
     }
   }
 
-  Future<void> save() async {
-    try {
-      await Future.wait([
-        setTheme(_theme),
-        setFontHeight(_fontHeight),
-        setFontSize(_fontSize),
-        setWakeUp(_wakeUp)
-      ]);
-      wakeUp ? Wakelock.enable() : Wakelock.disable();
-    } catch (err) {
-      Fluttertoast.showToast(msg: '儲存設定發生錯誤: $err');
-    }
-  }
-
   Future<void> setFontSize(double fontSize) {
     _fontSize = fontSize;
     notifyListeners();
     return _storage!.setFontSize(_fontSize);
-  }
-
-  Future<void> setFontHeight(double fontHeight) {
-    _fontHeight = fontHeight;
-    notifyListeners();
-    return _storage!.setFontHeight(_fontHeight);
   }
 
   Future<void> setTheme(ThemeMode theme) {
@@ -116,7 +90,7 @@ class SettingsStore with ChangeNotifier {
   }
 
   toggleTheme() {
-    _theme = _theme == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    setTheme(_theme == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark);
     notifyListeners();
   }
 }

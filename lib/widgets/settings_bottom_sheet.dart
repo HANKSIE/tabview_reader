@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:tabview_reader/store/settings.dart';
 import 'package:tabview_reader/store/tabview_reader_group.dart';
@@ -18,56 +17,30 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
     final readerGroupStore =
         Provider.of<TabviewReaderGroupStore>(context, listen: false);
 
-    List<ControlConfig> configs = [
-      ControlConfig(
-        label: '字體大小 ${settingsStore.fontSize}',
-        slide: SlideControlConfig(
-            value: settingsStore.fontSize,
-            min: 5.0,
-            max: 50.0,
-            divisions: 45,
-            onChange: (double val) {
-              settingsStore.setFontSize(double.parse(val.toStringAsFixed(1)));
-              readerGroupStore.reset(lineHeight: settingsStore.lineHeight);
-            }),
-      ),
-      ControlConfig(
-        label: '字體高度 ${settingsStore.fontHeight}',
-        slide: SlideControlConfig(
-            value: settingsStore.fontHeight,
-            min: 1.2,
-            max: 10.0,
-            divisions: 88,
-            onChange: (double val) {
-              settingsStore.setFontHeight(double.parse(val.toStringAsFixed(1)));
-              readerGroupStore.reset(lineHeight: settingsStore.lineHeight);
-            }),
-      ),
-    ];
     return Padding(
       padding: const EdgeInsets.all(50),
       child: ListView(
         children: [
-          ...[
-            for (final config in configs)
-              Row(children: [
-                Expanded(
-                  child: Text(
-                    config.label,
-                    style: const TextStyle(fontSize: 20),
-                  ),
-                ),
-                Expanded(
-                    child: Slider(
-                  value: config.slide.value,
-                  min: config.slide.min,
-                  max: config.slide.max,
-                  divisions: config.slide.divisions,
-                  label: config.slide.value.toString(),
-                  onChanged: config.slide.onChange,
-                ))
-              ])
-          ],
+          Row(children: [
+            Expanded(
+              child: Text(
+                '字體大小 ${settingsStore.fontSize}',
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
+            Expanded(
+                child: Slider(
+                    value: settingsStore.fontSize,
+                    min: 5.0,
+                    max: 50.0,
+                    divisions: 45,
+                    onChanged: (double val) {
+                      settingsStore
+                          .setFontSize(double.parse(val.toStringAsFixed(1)));
+                      readerGroupStore.reset(
+                          lineHeight: settingsStore.lineHeight);
+                    }))
+          ]),
           Row(children: [
             const Expanded(
               child: Text(
@@ -98,42 +71,8 @@ class _SettingsBottomSheetState extends State<SettingsBottomSheet> {
               },
             ))
           ]),
-          const SizedBox(
-            height: 50,
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              textStyle: const TextStyle(fontSize: 20),
-              padding: const EdgeInsets.only(top: 10, bottom: 10),
-            ),
-            onPressed: () async {
-              await settingsStore.save();
-              Fluttertoast.showToast(msg: '已儲存', gravity: ToastGravity.CENTER);
-            },
-            child: const Text('儲存'),
-          ),
         ],
       ),
     );
   }
-}
-
-class ControlConfig {
-  String label;
-  SlideControlConfig slide;
-  ControlConfig({required this.label, required this.slide});
-}
-
-class SlideControlConfig {
-  double value;
-  double max;
-  double min;
-  int divisions;
-  void Function(double) onChange;
-  SlideControlConfig(
-      {required this.value,
-      required this.max,
-      required this.min,
-      required this.divisions,
-      required this.onChange});
 }
