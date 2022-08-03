@@ -68,7 +68,7 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
         ),
         SimpleDialogOption(
             child: IconButton(
-                icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow_rounded),
+                icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                 onPressed: () async {
                   setState(() {
                     _isPlaying = !_isPlaying;

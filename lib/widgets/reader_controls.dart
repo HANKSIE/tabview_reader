@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path/path.dart' as path;
@@ -50,7 +51,9 @@ class _NormalControlsState extends State<TabviewReaderControls> {
       Tooltip(
         message: '節拍器',
         child: IconButton(
-            icon: const Icon(Icons.music_note),
+            icon: const Icon(IconData(0xf70b,
+                fontFamily: CupertinoIcons.iconFont,
+                fontPackage: CupertinoIcons.iconFontPackage)),
             onPressed: () {
               showDialog(
                   context: context,
