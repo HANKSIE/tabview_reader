@@ -57,6 +57,7 @@ class _NormalControlsState extends State<TabviewReaderControls> {
             onPressed: () {
               showDialog(
                   context: context,
+                  barrierDismissible: false,
                   builder: (context) {
                     return const MetronomeSimpleDialog();
                   });

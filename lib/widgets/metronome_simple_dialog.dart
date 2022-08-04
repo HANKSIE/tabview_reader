@@ -40,6 +40,17 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
     return SimpleDialog(
       alignment: Alignment.bottomCenter,
       children: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            IconButton(
+                onPressed: () {
+                  _timer?.cancel();
+                  Navigator.of(context).pop();
+                },
+                icon: const Icon(Icons.close))
+          ],
+        ),
         SimpleDialogOption(
           child: RichText(
             text: TextSpan(children: [
