@@ -1,7 +1,5 @@
-import 'dart:async';
-
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:tabview_reader/utils/metronome.dart';
 
 class MetronomeSimpleDialog extends StatefulWidget {
   const MetronomeSimpleDialog({Key? key}) : super(key: key);
@@ -11,29 +9,7 @@ class MetronomeSimpleDialog extends StatefulWidget {
 }
 
 class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
-  final double _min = 40;
-  final double _max = 218;
-  double _bpm = 40;
-  bool _isPlaying = false;
-
-  late final AudioPlayer _audioPlayer;
-  Timer? _timer;
-  _MetronomeSimpleDialogState() {
-    _audioPlayer = AudioPlayer();
-    _audioPlayer.setSource(AssetSource('audios/metronome.wav'));
-  }
-
-  _restartTimer() {
-    _timer?.cancel();
-    if (_isPlaying) {
-      _timer =
-          Timer.periodic(Duration(milliseconds: 60000 ~/ _bpm), (timer) async {
-        // restart
-        await _audioPlayer.seek(const Duration(milliseconds: 0));
-        _audioPlayer.resume();
-      });
-    }
-  }
+  final _metronome = Metronome(bpm: 40);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +21,7 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
           children: [
             IconButton(
                 onPressed: () {
-                  _timer?.cancel();
+                  _metronome.stop();
                   Navigator.of(context).pop();
                 },
                 icon: const Icon(Icons.close))
@@ -55,7 +31,7 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
           child: RichText(
             text: TextSpan(children: [
               TextSpan(
-                  text: '${_bpm.toInt()}',
+                  text: '${_metronome.bpm.toInt()}',
                   style: const TextStyle(fontSize: 50)),
               const WidgetSpan(child: SizedBox(width: 10)),
               const TextSpan(text: '每分鐘心跳數 (BPM)'),
@@ -64,28 +40,61 @@ class _MetronomeSimpleDialogState extends State<MetronomeSimpleDialog> {
         ),
         SimpleDialogOption(
           child: Slider(
-            value: _bpm,
-            min: _min,
-            max: _max,
-            divisions: (_max - _min).toInt(),
-            label: '${_bpm.toInt()} BPM',
+            value: _metronome.bpm,
+            min: 40,
+            max: 218,
+            divisions: 218 - 40,
+            label: '${_metronome.bpm.toInt()} BPM',
             onChanged: (double val) {
               setState(() {
-                _bpm = val;
+                _metronome.bpm = val;
               });
-              _restartTimer();
+              if (_metronome.isPlaying) {
+                _metronome.restart();
+              }
+            },
+          ),
+        ),
+        SimpleDialogOption(
+          child: RichText(
+            text: TextSpan(children: [
+              TextSpan(
+                  text: '${_metronome.beat}',
+                  style: const TextStyle(fontSize: 50)),
+              const WidgetSpan(child: SizedBox(width: 10)),
+              const TextSpan(text: 'Beat'),
+            ]),
+          ),
+        ),
+        SimpleDialogOption(
+          child: Slider(
+            value: _metronome.beat.toDouble(),
+            min: 1,
+            max: 12,
+            divisions: 11,
+            label: '${_metronome.beat} Beat',
+            onChanged: (double val) {
+              setState(() {
+                _metronome.beat = val.toInt();
+              });
+              if (_metronome.isPlaying) {
+                _metronome.restart();
+              }
             },
           ),
         ),
         SimpleDialogOption(
             child: IconButton(
-                icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                icon:
+                    Icon(_metronome.isPlaying ? Icons.pause : Icons.play_arrow),
                 onPressed: () async {
                   setState(() {
-                    _isPlaying = !_isPlaying;
+                    if (!_metronome.isPlaying) {
+                      _metronome.restart();
+                    } else {
+                      _metronome.stop();
+                    }
                   });
-
-                  _restartTimer();
                 })),
       ],
     );
