@@ -23,7 +23,7 @@ class Metronome {
         Timer.periodic(Duration(milliseconds: 60000 ~/ bpm), (timer) async {
       // restart
       await _audioPlayer.seek(const Duration(milliseconds: 0));
-      final double volume = _currentBeat == 0 && beat > 1 ? 1 : 0.4;
+      final double volume = _currentBeat == 0 && beat > 1 ? 1 : 0.2;
       _audioPlayer
         ..setVolume(volume)
         ..resume();
