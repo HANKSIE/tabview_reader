@@ -63,7 +63,7 @@ class TabviewReader {
 
     for (int i = 1; i <= heads.length; i++) {
       if (i == heads.length) {
-        final end = heads[i - 1] + 6;
+        final end = sheetMusic.lines.length - 1; // 最後一個heads + 剩下的文本
         pages.add([for (int j = start; j <= end; j++) lines[j]]);
       } else if (heads[i] + 6 > start + viewLines - 1) {
         final end = heads[i - 1] + 6;
